@@ -1,0 +1,27 @@
+{
+	"name": "unstable-cacao/web-server",
+	"authors": 
+	[
+		
+	],
+	"minimum-stability": "stable",
+	"autoload":
+	{
+		"psr-4": 
+		{
+			"WebServer\\": "Source/"
+		}
+	},
+	"require":
+	{
+		"oktopost/jsonencode": "^1.0",
+		"unstable-cacao/traitor": "^1.0",
+		"unstable-cacao/structura": "^1.0",
+		"phpunit/phpunit": "^7.2",
+		"oktopost/cosmic-ray": "^1.0"
+	},
+	"scripts": 
+	{
+        "test": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests"
+	}
+}
