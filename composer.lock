@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f1d26831eedacdc3636a1b93113b3ec2",
+    "content-hash": "dcdf190f66ced75044947fb007825002",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -1540,16 +1540,16 @@
         },
         {
             "name": "unstable-cacao/narrator",
-            "version": "1.0.2",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unstable-cacao/Narrator.git",
-                "reference": "744649e375493af58b01d09f70df1ad7e2a964d0"
+                "reference": "b5ef1ffb5c1f0ab2326167e69d81c91852312d87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unstable-cacao/Narrator/zipball/744649e375493af58b01d09f70df1ad7e2a964d0",
-                "reference": "744649e375493af58b01d09f70df1ad7e2a964d0",
+                "url": "https://api.github.com/repos/unstable-cacao/Narrator/zipball/b5ef1ffb5c1f0ab2326167e69d81c91852312d87",
+                "reference": "b5ef1ffb5c1f0ab2326167e69d81c91852312d87",
                 "shasum": ""
             },
             "require": {
@@ -1576,7 +1576,7 @@
                     "email": "marinashers@gmail.com"
                 }
             ],
-            "time": "2018-06-06T14:17:07+00:00"
+            "time": "2018-06-11T11:14:58+00:00"
         },
         {
             "name": "unstable-cacao/structura",

@@ -7,8 +7,9 @@ use Skeleton\Skeleton;
 
 class TargetHandler
 {
-	private $controller;
 	private $action;
+	private $controller;
+	
 	private $decorators = [];
 
 
