@@ -19,7 +19,7 @@ class WebServerScope
 	/** @var IWebResponse */
 	private $webResponse = null;
 	
-	/** @var ActionResponse */
+	/** @var ActionResult */
 	private $actionResponse;
 	
 	/** @var Narrator */
@@ -41,7 +41,7 @@ class WebServerScope
 		
 		$params->byType(IWebRequest::class, [$this, 'webRequest']);
 		$params->byType(IWebResponse::class, [$this, 'webResponse']);
-		$params->byType(ActionResponse::class, [$this, 'actionResponse']);
+		$params->byType(ActionResult::class, [$this, 'actionResponse']);
 		
 		$params->fromSkeleton($skeleton);
 		
@@ -68,7 +68,7 @@ class WebServerScope
 		return $this->skeleton;
 	}
 	
-	public function actionResponse(): ActionResponse
+	public function actionResponse(): ActionResult
 	{
 		return $this->actionResponse;
 	}

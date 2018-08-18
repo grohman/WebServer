@@ -2,7 +2,7 @@
 namespace WebServer;
 
 
-class ActionResponse
+class ActionResult
 {
 	private $actionResponse		= null;
 	private $decoratorsResponse = [];

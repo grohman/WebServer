@@ -2,7 +2,7 @@
 namespace WebServer\Engine;
 
 
-use WebServer\ActionResponse;
+use WebServer\ActionResult;
 use WebServer\ActionMethods;
 use WebServer\TargetHandler;
 use WebServer\WebServerScope;
@@ -13,7 +13,7 @@ class ActionExecutor
 	/** @var WebServerScope */
 	private $scope;
 	
-	/** @var ActionResponse */
+	/** @var ActionResult */
 	private $response;
 	
 	
