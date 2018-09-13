@@ -9,6 +9,7 @@ class JsonLoader implements ILoader
 {
 	public function load(string $path): array
 	{
-		// TODO: Implement load() method.
+		$content = file_get_contents($path);
+		return jsondecode($content, true);
 	}
 }

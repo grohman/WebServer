@@ -9,6 +9,6 @@ class PhpLoader implements ILoader
 {
 	public function load(string $path): array
 	{
-		// TODO: Implement load() method.
+		return include $path;
 	}
 }
