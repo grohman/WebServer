@@ -2,99 +2,139 @@
 namespace WebServer\Engine;
 
 
-use WebServer\ActionResult;
-use WebServer\ActionMethods;
-use WebServer\TargetHandler;
-use WebServer\WebServerScope;
+use Narrator\Narrator;
+
+use WebServer\Base\IRequestTarget;
+use WebServer\Base\IServerResponse;
+use WebServer\Exceptions\WebServerException;
 
 
 class ActionExecutor
 {
-	/** @var WebServerScope */
-	private $scope;
+	private const HANDLERS_INIT			= 'init';
+	private const HANDLERS_PRE_ACTION	= 'preAction';
+	private const HANDLERS_POST_ACTION	= 'postAction';
+	private const HANDLERS_ON_EXCEPTION	= 'onException';
+	private const HANDLERS_DESTROY		= 'destroy';
 	
-	/** @var ActionResult */
-	private $response;
+	
+	/** @var IServerResponse|null */
+	private $response = null;
+	
+	/** @var Narrator */
+	private $narrator;
+	
+	/** @var IRequestTarget */
+	private $target;
 	
 	
-	private function sortDecorators(TargetHandler $handler): array
+	private function invokeMethod(string $method): void
 	{
-		$callbacks = [];
-		$classes = [];
-		
-		foreach ($handler->getDecorators() as $decorator)
+		foreach ($this->target->getDecorators() as $object)
 		{
-			if (is_callable($decorator))
-			{
-				$callbacks[] = $decorator;
-			}
-			else if (is_object($decorator))
-			{
-				$classes[] = $decorator;
-			}
-			else if (is_string($decorator))
-			{
-				$classes[] = $this->scope->skeleton()->load($decorator);
-			}
+			$this->narrator->invokeMethodIfExists($object, $method);
 		}
 		
-		return [$callbacks, $classes];
+		if ($this->target->hasController())
+		{
+			$this->narrator->invokeMethodIfExists($this->target->getController(), $method);
+		}
 	}
 	
-	private function invoke(array $classes, string $method): void
+	private function invokeCallbackDecorators(): void
 	{
-		foreach ($classes as $class)
+		foreach ($this->target->getCallbackDecorators() as $callbackDecorator)
 		{
-			if (!method_exists($class, $method))
-				continue;
-			
-			$result = $this->scope->narrator()->invoke([$class, $method]);
+			$this->narrator->invoke($callbackDecorator);
+		}
+	}
+	
+	private function invokeAction(): void
+	{
+		$result = $this->narrator->invoke($this->target->getAction());
+		$this->response = new ServerResponse($result);
+	}
+	
+	private function invokeMethodWithResponse(string $method, ?Narrator $narrator = null): void
+	{
+		$narrator = $narrator ?: $this->narrator;
+		$controller = $this->target->getController();
+		$decorators = $this->target->getDecorators();
+		
+		if ($controller)
+		{
+			$result = $narrator->invokeMethodIfExists($controller, $method);
 			
 			if (!is_null($result))
 			{
-				$this->response->addDecoratorResponse($result);
+				$this->response = new ServerResponse($result);
 			}
 		}
-	}
-	
-	private function invokeCallbacks(array $callbacks): void
-	{
-		foreach ($callbacks as $callback)
+		
+		foreach ($decorators as $decorator)
 		{
-			$result = $this->scope->narrator()->invoke($callback);
+			$result = $narrator->invokeMethodIfExists($decorator, $method);
 			
 			if (!is_null($result))
 			{
-				$this->response->addDecoratorResponse($result);
+				$this->response = new ServerResponse($result);
 			}
 		}
 	}
 	
-	private function invokeAction($action)
+	private function handleException(\Throwable $t): void
 	{
-		$this->response->setActionResponse($this->scope->narrator()->invoke($action));
+		if (!$this->response)
+			$this->response = new ServerResponse();
+		
+		$narrator = clone $this->narrator;
+		$narrator->params()->first($t);
+		
+		$this->invokeMethodWithResponse(self::HANDLERS_ON_EXCEPTION, $narrator);
+	}
+		
+	
+	public function __construct(Narrator $narrator)
+	{
+		$this->narrator = $narrator;
+		
+		$narrator->params()->byType(IServerResponse::class, [$this, 'getServerResponse']);
 	}
 	
 	
-	public function __construct(WebServerScope $scope)
+	public function getServerResponse(): IServerResponse
 	{
-		$this->scope = $scope;
+		if (!$this->response)
+			throw new WebServerException(IServerResponse::class . ' is not available at this point');
+		
+		return $this->response;
+	}
+	
+	public function initialize(IRequestTarget $target): void
+	{
+		$this->target = $target;
 	}
 	
 	
-	public function execute(TargetHandler $handler): void
+	public function executeAction(): IServerResponse
 	{
-		$action = $handler->getActionCallback($this->scope->skeleton());
-		list($callbacks, $classes) = $this->sortDecorators($handler);
+		$this->invokeMethod(self::HANDLERS_INIT);
+		$this->invokeMethod(self::HANDLERS_PRE_ACTION);
+		$this->invokeCallbackDecorators();
 		
+		try
+		{
+			$this->invokeAction();
+		}
+		catch (\Throwable $t)
+		{
+			$this->handleException($t);
+			return $this->response;
+		}
 		
-		$this->invoke($classes, ActionMethods::INIT);
-		$this->invokeCallbacks($callbacks);
-		$this->invoke($classes, ActionMethods::PRE_EXECUTE);
+		$this->invokeMethodWithResponse(self::HANDLERS_POST_ACTION);
+		$this->invokeMethod(self::HANDLERS_DESTROY);
 		
-		$this->invokeAction($action);
-		
-		$this->invoke($classes, ActionMethods::POST_EXECUTE);
-		$this->invoke($classes, ActionMethods::FINALIZE);
+		return $this->response;
 	}
 }
