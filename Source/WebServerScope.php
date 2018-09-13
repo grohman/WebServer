@@ -3,6 +3,7 @@ namespace WebServer;
 
 
 use Narrator\Narrator;
+use Skeleton\ConfigLoader\DirectoryConfigLoader;
 use Skeleton\Skeleton;
 
 use WebCore\IWebRequest;
@@ -53,6 +54,8 @@ class WebServerScope
 	{
 		$this->skeleton = new Skeleton();
 		$this->skeleton->useGlobal();
+		
+		$this->skeleton->setConfigLoader(new DirectoryConfigLoader(__DIR__ . '/../Config/Skeleton'));
 		
 		$this->createNarrator();
 	}
