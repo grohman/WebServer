@@ -4,8 +4,8 @@ namespace WebServer\Engine;
 
 use Narrator\Narrator;
 
-use WebServer\Base\IRequestTarget;
-use WebServer\Base\IServerResponse;
+use WebServer\Base\ITargetAction;
+use WebServer\Base\IActionResponse;
 use WebServer\Exceptions\WebServerException;
 
 
@@ -18,13 +18,13 @@ class ActionExecutor
 	private const HANDLERS_DESTROY		= 'destroy';
 	
 	
-	/** @var IServerResponse|null */
+	/** @var IActionResponse|null */
 	private $response = null;
 	
 	/** @var Narrator */
 	private $narrator;
 	
-	/** @var IRequestTarget */
+	/** @var ITargetAction */
 	private $target;
 	
 	
@@ -52,7 +52,7 @@ class ActionExecutor
 	private function invokeAction(): void
 	{
 		$result = $this->narrator->invoke($this->target->getAction());
-		$this->response = new ServerResponse($result);
+		$this->response = new ActionResponse($result);
 	}
 	
 	private function invokeMethodWithResponse(string $method, ?Narrator $narrator = null): void
@@ -67,7 +67,7 @@ class ActionExecutor
 			
 			if (!is_null($result))
 			{
-				$this->response = new ServerResponse($result);
+				$this->response = new ActionResponse($result);
 			}
 		}
 		
@@ -77,7 +77,7 @@ class ActionExecutor
 			
 			if (!is_null($result))
 			{
-				$this->response = new ServerResponse($result);
+				$this->response = new ActionResponse($result);
 			}
 		}
 	}
@@ -85,7 +85,7 @@ class ActionExecutor
 	private function handleException(\Throwable $t): void
 	{
 		if (!$this->response)
-			$this->response = new ServerResponse();
+			$this->response = new ActionResponse();
 		
 		$narrator = clone $this->narrator;
 		$narrator->params()->first($t);
@@ -98,25 +98,25 @@ class ActionExecutor
 	{
 		$this->narrator = $narrator;
 		
-		$narrator->params()->byType(IServerResponse::class, [$this, 'getServerResponse']);
+		$narrator->params()->byType(IActionResponse::class, [$this, 'getServerResponse']);
 	}
 	
 	
-	public function getServerResponse(): IServerResponse
+	public function getServerResponse(): IActionResponse
 	{
 		if (!$this->response)
-			throw new WebServerException(IServerResponse::class . ' is not available at this point');
+			throw new WebServerException(IActionResponse::class . ' is not available at this point');
 		
 		return $this->response;
 	}
 	
-	public function initialize(IRequestTarget $target): void
+	public function initialize(ITargetAction $target): void
 	{
 		$this->target = $target;
 	}
 	
 	
-	public function executeAction(): IServerResponse
+	public function executeAction(): IActionResponse
 	{
 		$this->invokeMethod(self::HANDLERS_INIT);
 		$this->invokeMethod(self::HANDLERS_PRE_ACTION);

@@ -2,7 +2,7 @@
 namespace WebServer\Base;
 
 
-interface IRequestTarget
+interface ITargetAction
 {
 	public function hasController(): bool;
 	
@@ -22,4 +22,9 @@ interface IRequestTarget
 	 * @return object[]
 	 */
 	public function getDecorators(): array;
+	
+	/**
+	 * @return IResponseParser[]
+	 */
+	public function getResponseParsers(): array;
 }
