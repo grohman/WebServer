@@ -6,8 +6,8 @@ use Structura\Map;
 use Structura\Arrays;
 
 use WebServer\Base\Routing\ICostumeMatcher;
-use WebServer\Exceptions\MissingMatcherException;
 use WebServer\Exceptions\WebServerException;
+use WebServer\Exceptions\MissingMatcherException;
 
 
 class CostumeMatchersCollection
