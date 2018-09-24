@@ -2,7 +2,7 @@
 namespace WebServer\Engine;
 
 
-use Narrator\Narrator;
+use Narrator\INarrator;
 
 use WebServer\Base\ITargetAction;
 use WebServer\Base\IActionResponse;
@@ -21,7 +21,7 @@ class ActionExecutor
 	/** @var IActionResponse|null */
 	private $response = null;
 	
-	/** @var Narrator */
+	/** @var INarrator */
 	private $narrator;
 	
 	/** @var ITargetAction */
@@ -53,9 +53,11 @@ class ActionExecutor
 	{
 		$result = $this->narrator->invoke($this->target->getAction());
 		$this->response = new ActionResponse($result);
+		
+		$this->narrator->params()->byType(IActionResponse::class, function () { return $this->response; });
 	}
 	
-	private function invokeMethodWithResponse(string $method, ?Narrator $narrator = null): void
+	private function invokeMethodWithResponse(string $method, ?INarrator $narrator = null): void
 	{
 		$narrator = $narrator ?: $this->narrator;
 		$controller = $this->target->getController();
@@ -94,7 +96,7 @@ class ActionExecutor
 	}
 		
 	
-	public function __construct(Narrator $narrator)
+	public function __construct(INarrator $narrator)
 	{
 		$this->narrator = $narrator;
 		
@@ -125,6 +127,7 @@ class ActionExecutor
 		try
 		{
 			$this->invokeAction();
+			$this->invokeMethodWithResponse(self::HANDLERS_POST_ACTION);
 		}
 		catch (\Throwable $t)
 		{
@@ -132,7 +135,6 @@ class ActionExecutor
 			return $this->response;
 		}
 		
-		$this->invokeMethodWithResponse(self::HANDLERS_POST_ACTION);
 		$this->invokeMethod(self::HANDLERS_DESTROY);
 		
 		return $this->response;

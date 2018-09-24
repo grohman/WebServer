@@ -22,9 +22,17 @@ class CostumeMatchersCollection
 	}
 	
 	
-	public function add(ICostumeMatcher $matcher): void
+	/**
+	 * @param ICostumeMatcher|ICostumeMatcher[] $matchers
+	 * @throws WebServerException
+	 */
+	public function add($matchers): void
 	{
-		$this->addForKeys($matcher->key(), $matcher);
+		/** @var ICostumeMatcher $matcher */
+		foreach (Arrays::toArray($matchers) as $matcher)
+		{
+			$this->addForKeys($matcher->key(), $matcher);
+		}
 	}
 	
 	public function addForKeys($keys, ICostumeMatcher $matcher): void

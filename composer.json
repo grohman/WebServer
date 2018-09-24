@@ -19,7 +19,7 @@
 		"unstable-cacao/structura": "^1.0",
 		"phpunit/phpunit": "^7.2",
 		"oktopost/cosmic-ray": "^1.0",
-		"unstable-cacao/web-core": "^0.1.7",
+		"unstable-cacao/web-core": "^0.1.13",
 		"oktopost/skeleton": "^1.1",
 		"unstable-cacao/narrator": "^1.1",
 		"oktopost/objection": "^1.0"

@@ -3,7 +3,7 @@ namespace WebServer\Base\Engine;
 
 
 use WebCore\IWebRequest;
-use WebServer\Base\IClassLoader;
+use WebServer\Base\Config\IClassLoader;
 use WebServer\Base\Config\IRoutesConfigLoader;
 use WebServer\Base\Routing\ICostumeMatcher;
 

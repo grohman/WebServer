@@ -5,7 +5,7 @@ namespace WebServer\Engine\Routing;
 use WebCore\IWebRequest;
 use WebServer\Base\Config\IRoutesConfigLoader;
 use WebServer\Base\Engine\IRouterConfig;
-use WebServer\Base\IClassLoader;
+use WebServer\Base\Config\IClassLoader;
 use WebServer\Base\Routing\ICostumeMatcher;
 
 

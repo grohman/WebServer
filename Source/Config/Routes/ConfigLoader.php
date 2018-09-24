@@ -80,6 +80,7 @@ class ConfigLoader implements IRoutesConfigLoader
 		
 		if (!$callback)
 		{
+			/** @noinspection PhpInconsistentReturnPointsInspection */
 			return $result;
 		}
 	}

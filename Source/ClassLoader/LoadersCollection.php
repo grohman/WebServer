@@ -3,7 +3,7 @@ namespace WebServer\ClassLoader;
 
 
 use Structura\Arrays;
-use WebServer\Base\IClassLoader;
+use WebServer\Base\Config\IClassLoader;
 
 
 class LoadersCollection implements IClassLoader

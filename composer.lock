@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dcdf190f66ced75044947fb007825002",
+    "content-hash": "e6a60dbf15f7858305f0e03542a7b0cf",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -1664,16 +1664,16 @@
         },
         {
             "name": "unstable-cacao/web-core",
-            "version": "0.1.7",
+            "version": "0.1.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unstable-cacao/WebCore.git",
-                "reference": "4dbb6248c4f052ae3d81ca89f5ed7734d58f1b05"
+                "reference": "98b444f2e77931b9fb6755825816b54b0a84cd0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unstable-cacao/WebCore/zipball/4dbb6248c4f052ae3d81ca89f5ed7734d58f1b05",
-                "reference": "4dbb6248c4f052ae3d81ca89f5ed7734d58f1b05",
+                "url": "https://api.github.com/repos/unstable-cacao/WebCore/zipball/98b444f2e77931b9fb6755825816b54b0a84cd0e",
+                "reference": "98b444f2e77931b9fb6755825816b54b0a84cd0e",
                 "shasum": ""
             },
             "require": {
@@ -1710,7 +1710,7 @@
                     "role": "Developer"
                 }
             ],
-            "time": "2018-08-14T07:47:04+00:00"
+            "time": "2018-09-24T17:10:03+00:00"
         },
         {
             "name": "webmozart/assert",

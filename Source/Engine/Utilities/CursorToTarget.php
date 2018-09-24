@@ -4,7 +4,7 @@ namespace WebServer\Engine\Utilities;
 
 use Traitor\TStaticClass;
 
-use WebServer\Base\IClassLoader;
+use WebServer\Base\Config\IClassLoader;
 use WebServer\Base\ITargetAction;
 use WebServer\Base\Engine\IRouteCursor;
 use WebServer\Engine\TargetAction;

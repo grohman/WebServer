@@ -1,5 +1,5 @@
 <?php
-namespace WebServer\Base;
+namespace WebServer\Base\Config;
 
 
 interface IClassLoader
