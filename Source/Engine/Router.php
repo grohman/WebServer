@@ -111,7 +111,6 @@ class Router
 			function($config)
 				use (&$result)
 			{
-				echo 'invoked';
 				$result = $this->parseSingleRoute($config);
 				return $result;
 			});
