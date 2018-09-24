@@ -4,6 +4,16 @@ namespace WebServer\Base\Engine;
 
 interface ITargetCursor
 {
+	/**
+	 * @param string|string[] $decorators
+	 */
+	public function addDecorators($decorators): void;
+	
+	/**
+	 * @param string|string[] $parsers
+	 */
+	public function addResponseParsers($parsers): void;
+	
 	public function setAction($action): void;
 	public function setController(string $controller): void;
 	

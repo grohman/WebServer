@@ -14,13 +14,15 @@ class RouteMatcher
 	
 	private static function compareRoutePart(ITargetCursor $target, string $config, string $part): bool
 	{
-		if (strlen($config) <= 2)
+		$len = strlen($config);
+		
+		if ($len <= 2)
 			return $part == $config;
 		
-		if ($config[0] != '{' || $config[1] != '}')
+		if ($config[0] != '{' || $config[$len - 1] != '}')
 			return $config == $part;
 		
-		$config = substr(1, strlen($config) - 2);
+		$config = substr($config, 1, $len - 2);
 		$firstSep = strpos($config, ':');
 		
 		if ($firstSep === false)
@@ -29,10 +31,13 @@ class RouteMatcher
 			return true;
 		}
 		
-		$name = substr($config, 0, $firstSep);
-		$target->addRouteParam($name, $part);
+		if ($firstSep != 0)
+		{
+			$name = substr($config, 0, $firstSep);
+			$target->addRouteParam($name, $part);
+		}
 		
-		return ValueMatcher::matchString($target, $part, substr($config, $firstSep + 1));
+		return ValueMatcher::matchSingleKey($target, $part, substr($config, $firstSep + 1));
 	}
 	
 	
@@ -41,10 +46,21 @@ class RouteMatcher
 		if (!is_string($config))
 			throw new RoutingException("The value of a route config must be a string");
 		
-		if ($config == '' || $config == '/')
+		if ($target->getRoutePath() == '')
+		{
+			return in_array($config, ['', '*']);
+		}
+		else if ($config == '' || $config == '/')
+		{
 			return $target->getRoutePath() == '';
+		}
+		else if ($config == '*')
+		{
+			$target->setRoutePath('');
+			return true;
+		}
 		
-		$isLastCharacterIsSlash = $config[strlen($config) - 1];
+		$isLastCharacterIsSlash = ($config[strlen($config) - 1] == '/');
 		
 		if ($config[0] == '/')
 		{
@@ -67,7 +83,12 @@ class RouteMatcher
 		
 		for ($i = 0; $i < count($config); $i++)
 		{
-			if (!isset($path[$i]))
+			if ($config[$i] == '*')
+			{
+				$i = count($path);
+				break;
+			}
+			else if (!isset($path[$i]))
 			{
 				return false;
 			}

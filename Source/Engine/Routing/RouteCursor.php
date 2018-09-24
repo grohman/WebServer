@@ -23,9 +23,9 @@ class RouteCursor implements IRouteCursor
 	
 	private function getFirstValue(array $from)
 	{
-		for ($i = count($from); $i >= 0; $i--)
+		for ($i = count($from) - 1; $i >= 0; $i--)
 		{
-			if ($from[$i])
+			if (!is_null($from[$i] ?? null))
 				return $from[$i];
 		}
 		
@@ -55,15 +55,24 @@ class RouteCursor implements IRouteCursor
 		}
 		else
 		{
-			$target[$this->depth - 1] = array_merge($target[$this->depth], $values);
+			$target[$this->depth - 1] = array_merge($target[$this->depth - 1] ?? [], $values);
 		}
 		
-		return $values;
+		return $target;
 	}
 	
 	
 	public function __construct(string $routePath)
 	{
+		if ($routePath)
+		{
+			if ($routePath[0] == '/')
+				$routePath = substr($routePath, 1);
+			
+			if ($routePath[strlen($routePath) - 1] == '/')
+				$routePath = substr($routePath, 0, strlen($routePath) - 1);
+		}
+			
 		$this->routePath = [$routePath];
 	}
 	
@@ -87,7 +96,7 @@ class RouteCursor implements IRouteCursor
 	public function getParsers(): array
 	{
 		$parsers = array_filter($this->parsers);
-		return $parsers ? array_merge($parsers) : [];
+		return $parsers ? array_merge(...$parsers) : [];
 	}
 	
 	/**
@@ -96,7 +105,7 @@ class RouteCursor implements IRouteCursor
 	public function getDecorators(): array
 	{
 		$decorators = array_filter($this->decorators);
-		return $decorators ? array_merge($decorators) : [];
+		return $decorators ? array_merge(...$decorators) : [];
 	}
 	
 	public function setAction($action): void
@@ -154,13 +163,13 @@ class RouteCursor implements IRouteCursor
 		if (count($this->decorators) > $this->depth)	array_splice($this->decorators,		$this->depth);
 		if (count($this->parsers) > $this->depth)		array_splice($this->parsers,		$this->depth);
 		if (count($this->routePath) > $this->depth)		array_splice($this->routePath,		$this->depth);
-		if (count($this->routeParams) > $this->depth)	array_splice($this->routeParams,		$this->depth);
+		if (count($this->routeParams) > $this->depth)	array_splice($this->routeParams,	$this->depth);
 	}
 	
 	
 	public function getRoutePath(): string
 	{
-		return $this->getFirstValue($this->routePath);
+		return $this->getFirstValue($this->routePath) ?: '';
 	}
 	
 	public function hasRouteParams(): bool
@@ -171,7 +180,7 @@ class RouteCursor implements IRouteCursor
 	public function getRouteParams(): array
 	{
 		$params = array_filter($this->routeParams);
-		return $params ? array_merge($params) : [];
+		return $params ? array_merge(...$params) : [];
 	}
 	
 	public function setRoutePath(string $path): void

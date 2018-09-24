@@ -13,7 +13,13 @@ use WebServer\Exceptions\MissingMatcherException;
 class CostumeMatchersCollection
 {
 	/** @var Map|ICostumeMatcher[] */
-	private $matchers = [];
+	private $matchers;
+	
+	
+	public function __construct()
+	{
+		$this->matchers = new Map();
+	}
 	
 	
 	public function add(ICostumeMatcher $matcher): void

@@ -1,4 +1,4 @@
-<phpunit bootstrap="Tests/boot.php">
+<phpunit>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">Source/</directory>

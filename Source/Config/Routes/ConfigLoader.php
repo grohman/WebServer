@@ -78,6 +78,9 @@ class ConfigLoader implements IRoutesConfigLoader
 			}
 		}
 		
-		return $callback ? null : $result;
+		if (!$callback)
+		{
+			return $result;
+		}
 	}
 }

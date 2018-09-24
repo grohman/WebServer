@@ -25,12 +25,46 @@ class Router
 	private $cursor;
 	
 	
+	private const KEYS = [
+		'get'			=> true,
+		'query'			=> true,
+		'post'			=> true,
+		'params'		=> true,
+		'path'			=> true,
+		'headers'		=> true,
+		'header'		=> true,
+		'cookies'		=> true,
+		'cookie'		=> true,
+		'env'			=> true,
+		'server'		=> true,
+		'environment'	=> true,
+		'ajax'			=> true,
+		'uri'			=> true,
+		'url'			=> true,
+		'method'		=> true,
+		'route'			=> true,
+		'action'		=> true,
+		'controller'	=> true,
+		'include'		=> true,
+		'inc'			=> true,
+		'_'				=> true,
+		'require'		=> true,
+		'req'			=> true,
+		'*'				=> true,
+		'config'		=> true,
+		'decorator'		=> true,
+		'decorators'	=> true,
+		'parser'		=> true,
+		'parsers'		=> true
+	];
+	
+	
 	private function parseRoutePath(array $route): bool
 	{
-		if ($route['route'] ?? false)
+		if (!isset($route['route']))
 			return true;
 		
-		return RouteMatcher::match($this->request, $this->cursor, $route['route']);
+		return RouteMatcher::match($this->cursor, $route['route']);
 	}
 	
 	private function parseStandardParams(array $route): bool
@@ -40,7 +74,7 @@ class Router
 	
 	private function parseExtraMatchers(array $route): bool
 	{
-		$extraValues = array_diff_key($route, StandardMatcher::KEYS);
+		$extraValues = array_diff_key($route, self::KEYS);
 		
 		foreach ($extraValues as $key => $value)
 		{
@@ -71,10 +105,13 @@ class Router
 		if (!$config)
 			return true;
 		
+		$result = false;
+		
 		$this->config->getConfigLoader()->load($config, 
 			function($config)
 				use (&$result)
 			{
+				echo 'invoked';
 				$result = $this->parseSingleRoute($config);
 				return $result;
 			});
@@ -87,6 +124,9 @@ class Router
 		$includes = array_merge($route['include'] ?? [], $route['inc'] ?? [], $route['_'] ?? []);
 		$requires = array_merge($route['require'] ?? [], $route['req'] ?? [], $route['*'] ?? []);
 		
+		if (!$includes && !$requires)
+			return true;
+		
 		$isMatched = false;
 		$isRequired = (bool)$requires;
 		
@@ -97,11 +137,11 @@ class Router
 			$this->cursor->push();
 			
 			$result = $this->parseSingleRoute($route);
-			
 			$this->cursor->pop();
 			
 			if ($result)
 			{
+				$isMatched = true;
 				break;
 			}
 			else
@@ -122,22 +162,29 @@ class Router
 	private function parseSingleRoute(array $route): bool
 	{
 		if (!$this->parseRoutePath($route))
+		{
 			return false;
-		
-		if (!$this->parseStandardParams($route))
+		}
+		else if (!$this->parseStandardParams($route))
+		{
 			return false;
-		
-		if (!$this->parseExtraMatchers($route))
+		}
+		else if (!$this->parseExtraMatchers($route))
+		{
 			return false;
-		
-		if (!$this->parseExtraConfig($route))
+		}
+		else if (!$this->parseExtraConfig($route))
+		{
 			return false;
-		
-		if (!$this->parseIncludes($route))
+		}
+		else if (!$this->parseIncludes($route))
+		{
 			return false;
-		
-		if (!$this->parseIncludes($route))
+		}
+		else if ($this->cursor->getRoutePath())
+		{
 			return false;
+		}
 			
 		$this->parseSetup($route);
 		

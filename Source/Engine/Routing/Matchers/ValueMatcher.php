@@ -18,53 +18,61 @@ class ValueMatcher
 	private const CONTROLLER_VAL	= ':controller';
 	
 	
-	public static function matchString(ITargetCursor $cursor, string $value, string $config): bool
+	public static function matchSingleKey(ITargetCursor $cursor, string $value, $config): bool
 	{
-		$len = strlen($config);
-		
-		if ($len >= strlen(self::CONTROLLER_VAL))
+		if (is_string($config))
 		{
-			if ($config == self::CONTROLLER_VAL)
+			$len = strlen($config);
+			
+			if ($len >= strlen(self::CONTROLLER_VAL))
 			{
-				$cursor->setController($value);
-				return true;
-			}
-			else if (substr($config, $len - strlen(self::CONTROLLER_VAL)) == self::CONTROLLER_VAL)
-			{
-				$config = substr($config, $len - strlen(self::CONTROLLER_VAL));
-				$result = self::matchString($cursor, $value, $config);
-				
-				if ($result)
+				if ($config == self::CONTROLLER_VAL)
+				{
 					$cursor->setController($value);
-				
-				return $result;
+					return true;
+				} 
+				else if (substr($config, $len - strlen(self::CONTROLLER_VAL)) == self::CONTROLLER_VAL)
+				{
+					$config = substr($config, 0, $len - strlen(self::CONTROLLER_VAL));
+					$result = self::matchSingleValue($value, $config);
+					
+					if ($result)
+						$cursor->setController($value);
+					
+					return $result;
+				}
 			}
-		}
-		
-		if ($len >= strlen(self::ACTION_VAL))
-		{
-			if ($config == self::ACTION_VAL)
+			
+			if ($len >= strlen(self::ACTION_VAL))
 			{
-				$cursor->setAction($value);
-				return true;
-			}
-			else if (substr($config, $len - strlen(self::ACTION_VAL)) == self::ACTION_VAL)
-			{
-				$config = substr($config, $len - strlen(self::ACTION_VAL));
-				$result = self::matchString($cursor, $value, $config);
-				
-				if ($result)
+				if ($config == self::ACTION_VAL)
+				{
 					$cursor->setAction($value);
-				
-				return $result;
+					return true;
+				}
+				else if (substr($config, $len - strlen(self::ACTION_VAL)) == self::ACTION_VAL)
+				{
+					$config = substr($config, 0, $len - strlen(self::ACTION_VAL));
+					$result = self::matchSingleValue($value, $config);
+					
+					if ($result)
+						$cursor->setAction($value);
+					
+					return $result;
+				}
 			}
 		}
 		
 		return self::matchSingleValue($value, $config);
 	}
 	
-	public static function matchSingleValue(string $value, string $config): bool
+	public static function matchSingleValue(string $value, $config): bool
 	{
+		if (is_array($config))
+			return in_array($value, $config);
+		else if (!is_string($config))
+			throw new RoutingException('Expecting array or string');
+		
 		$len = strlen($config);
 		
 		if ($len > 2)
@@ -76,11 +84,11 @@ class ValueMatcher
 			else if ($config[0] == '(' && $config[$len - 1] == ')')
 			{
 				$config = explode(',', substr($config, 1, $len - 2));
-				return !in_array($value, $config, true);
+				return in_array($value, $config, true);
 			}
 		}
 		
-		if (strpos($value, '*') !== false)
+		if (strpos($config, '*') !== false)
 		{
 			return fnmatch($config, $value);
 		}
@@ -113,7 +121,7 @@ class ValueMatcher
 		}
 		else if (is_string($config))
 		{
-			return self::matchString($cursor, $input->string($key), $config);
+			return self::matchSingleKey($cursor, $input->string($key), $config);
 		}
 		else
 		{

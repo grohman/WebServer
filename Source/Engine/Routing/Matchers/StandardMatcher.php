@@ -4,6 +4,7 @@ namespace WebServer\Engine\Routing\Matchers;
 
 use Traitor\TStaticClass;
 use WebCore\IWebRequest;
+use WebCore\Inputs\FromArray;
 use WebCore\Inputs\ArrayInput;
 use WebServer\Base\Engine\ITargetCursor;
 use WebServer\Exceptions\WebServerFatalException;
@@ -33,7 +34,7 @@ class StandardMatcher
 		
 		'ajax'	=> true,
 		
-		'uir'	=> true,
+		'uri'	=> true,
 		'url'	=> true,
 		
 		'method'	=> true
@@ -69,7 +70,7 @@ class StandardMatcher
 				break;
 				
 			case 'path':
-				$with = new ArrayInput($cursor->getRouteParams());
+				$with = new FromArray($cursor->getRouteParams());
 				break;
 				
 			case 'header':
@@ -85,7 +86,7 @@ class StandardMatcher
 			case 'env':
 			case 'server':
 			case 'environment':
-				$with = new ArrayInput($_SERVER);
+				$with = new FromArray($_SERVER);
 				break;
 			
 			case 'url':
@@ -95,7 +96,7 @@ class StandardMatcher
 				return ValueMatcher::matchSingleValue($request->getURI(), $config);
 			
 			case 'method':
-				return ValueMatcher::matchSingleValue($request->getMethod(), strtoupper($config));
+				return ValueMatcher::matchSingleKey($cursor, $request->getMethod(), $config);
 				
 			case 'ajax':
 				return strtolower($request->getHeader('X-Requested-With', '') == 'xmlhttprequest');
@@ -104,7 +105,15 @@ class StandardMatcher
 				throw new WebServerFatalException("Unexpected key <$key> in route config");
 		}
 		
-		return ValueMatcher::match($cursor, $with, $key, $config);
+		foreach ($config as $paramName => $paramConfig)
+		{
+			if (!ValueMatcher::match($cursor, $with, $paramName, $paramConfig))
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	
