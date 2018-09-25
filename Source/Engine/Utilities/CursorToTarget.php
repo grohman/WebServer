@@ -32,7 +32,7 @@ class CursorToTarget
 		
 		$controllerObject = $loader->getController($controller, $action);
 		
-		if (!$controller)
+		if (!$controllerObject)
 		{
 			throw new RoutingException("Controller <$controller> is not a valid controller name");
 		}

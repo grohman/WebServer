@@ -198,7 +198,7 @@ class Router
 	}
 	
 	
-	public function parseFiles($config): IRouteCursor
+	public function parseFiles($config): ?IRouteCursor
 	{
 		$result = null;
 		

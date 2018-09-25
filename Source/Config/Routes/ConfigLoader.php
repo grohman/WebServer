@@ -6,15 +6,9 @@ use WebServer\Base\Config\IRoutesConfigLoader;
 use WebServer\Exceptions\FileNotFoundException;
 
 
-/**
- * @autoload
- */
 class ConfigLoader implements IRoutesConfigLoader
 {
-	/**
-	 * @autoload
-	 * @var \WebServer\Base\Config\ILoaderFactory
-	 */
+	/** @var \WebServer\Base\Config\ILoaderFactory */
 	private $factory;
 	
 	/** @var string */
@@ -23,21 +17,12 @@ class ConfigLoader implements IRoutesConfigLoader
 	
 	private function loadForPath(string $path): array 
 	{
-		if (strpos($path, '*') !== false)
-		{
-			$result = $this->load(glob($path));
-		}
-		else 
-		{
-			$path = $this->rootDir . $path;
-			
-			if (!file_exists($path))
-				throw new FileNotFoundException($path);
-			
-			$loader = $this->factory->get(pathinfo($path, PATHINFO_EXTENSION));
-			$result = $loader->load($path);
-		}
-			
+		if (!file_exists($path))
+			throw new FileNotFoundException($path);
+		
+		$loader = $this->factory->get(pathinfo($path, PATHINFO_EXTENSION));
+		$result = $loader->load($path);
+		
 		return $result;
 	}
 	
@@ -48,6 +33,7 @@ class ConfigLoader implements IRoutesConfigLoader
 			$rootDir .= DIRECTORY_SEPARATOR;
 		
 		$this->rootDir = $rootDir;
+		$this->factory = new LoaderFactory();
 	}
 
 
@@ -56,7 +42,7 @@ class ConfigLoader implements IRoutesConfigLoader
 	 * @param callable|null $callback
 	 * @return array|void
 	 */
-	public function load($path, callable $callback = null)
+	public function load($path, ?callable $callback = null)
 	{
 		if (!is_array($path))
 			$path = [$path];
@@ -65,16 +51,21 @@ class ConfigLoader implements IRoutesConfigLoader
 			
 		foreach ($path as $item)
 		{
-			$loadedResult = $this->loadForPath($item);
+			$files = glob($this->rootDir . $item);
 			
-			if ($callback)
+			foreach ($files as $file)
 			{
-				if ($callback($loadedResult) === false)
-					return;
-			}
-			else 
-			{
-				$result = array_merge($result, $loadedResult);
+				$loadedResult = $this->loadForPath($file);
+				
+				if ($callback)
+				{
+					if ($callback($loadedResult) === false)
+						return;
+				}
+				else 
+				{
+					$result = array_merge($result, $loadedResult);
+				}
 			}
 		}
 		

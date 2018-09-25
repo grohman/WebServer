@@ -115,14 +115,16 @@ class ServerConfig implements IServerConfig
 	{
 		if (!$this->actualClassLoader)
 		{
+			$default = new DefaultLoader($this->skeleton);
+			
 			if (!$this->classLoader)
 			{
-				$this->actualClassLoader = new DefaultLoader();
+				$this->actualClassLoader = $default;
 			}
 			else
 			{
 				$this->actualClassLoader = clone $this->classLoader;
-				$this->actualClassLoader->add(new DefaultLoader());
+				$this->actualClassLoader->add($default);
 			}
 		}
 		

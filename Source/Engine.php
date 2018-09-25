@@ -50,7 +50,7 @@ class Engine
 		$router = new Router();
 		$router->setup($routerConfig);
 		
-		if (Arrays::isNumeric($config))
+		if (is_string($config) ||Arrays::isNumeric($config))
 		{
 			$target = $router->parseFiles($config);
 		}

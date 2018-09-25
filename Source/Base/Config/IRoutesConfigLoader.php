@@ -9,5 +9,5 @@ interface IRoutesConfigLoader
 	 * @param callable|null $callback
 	 * @return array|void
 	 */
-	public function load($path, callable $callback = null);
+	public function load($path, ?callable $callback = null);
 }
