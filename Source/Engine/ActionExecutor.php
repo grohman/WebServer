@@ -12,8 +12,8 @@ use WebServer\Exceptions\WebServerException;
 class ActionExecutor
 {
 	private const HANDLERS_INIT			= 'init';
-	private const HANDLERS_PRE_ACTION	= 'preAction';
-	private const HANDLERS_POST_ACTION	= 'postAction';
+	private const HANDLERS_PRE_ACTION	= 'preExecute';
+	private const HANDLERS_POST_ACTION	= 'postExecute';
 	private const HANDLERS_ON_EXCEPTION	= 'onException';
 	private const HANDLERS_DESTROY		= 'destroy';
 	
@@ -63,9 +63,9 @@ class ActionExecutor
 		$controller = $this->target->getController();
 		$decorators = $this->target->getDecorators();
 		
-		if ($controller)
+		foreach ($decorators as $decorator)
 		{
-			$result = $narrator->invokeMethodIfExists($controller, $method);
+			$result = $narrator->invokeMethodIfExists($decorator, $method);
 			
 			if (!is_null($result))
 			{
@@ -73,9 +73,9 @@ class ActionExecutor
 			}
 		}
 		
-		foreach ($decorators as $decorator)
+		if ($controller)
 		{
-			$result = $narrator->invokeMethodIfExists($decorator, $method);
+			$result = $narrator->invokeMethodIfExists($controller, $method);
 			
 			if (!is_null($result))
 			{

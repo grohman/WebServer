@@ -2,6 +2,8 @@
 namespace WebServer;
 
 
+use WebCore\IWebRequest;
+use WebCore\HTTP\Requests\StandardWebRequest;
 use WebServer\Base\Config\IServerConfig;
 use WebServer\Config\ServerConfig;
 
@@ -10,10 +12,14 @@ class Server
 {
 	private $config;
 	
+	/** @var IWebRequest|null */
+	private $request = null;
 	
-	public function __construct()
+	
+	public function __construct(IWebRequest $request = null)
 	{
 		$this->config = new ServerConfig();
+		$this->request = $request ?: StandardWebRequest::current();
 	}
 	
 	
@@ -25,7 +31,7 @@ class Server
 		$this->config->validate();
 		
 		$engine = new Engine($this->config);
-		$engine->execute($config);
+		$engine->execute($config, $this->request);
 	}
 	
 	

@@ -111,7 +111,7 @@ class Router
 			function($config)
 				use (&$result)
 			{
-				$result = $this->parseSingleRoute($config);
+				$result = $this->parseSingleRoute($config, true);
 				return $result;
 			});
 		
@@ -158,7 +158,7 @@ class Router
 	}
 	
 	
-	private function parseSingleRoute(array $route): bool
+	private function parseSingleRoute(array $route, bool $skipRoute = false): bool
 	{
 		if (!$this->parseRoutePath($route))
 		{
@@ -180,7 +180,7 @@ class Router
 		{
 			return false;
 		}
-		else if ($this->cursor->getRoutePath())
+		else if (!$skipRoute && $this->cursor->getRoutePath())
 		{
 			return false;
 		}

@@ -13,6 +13,7 @@ use WebServer\Engine\ActionExecutor;
 use WebServer\Engine\ActionResponse;
 use WebServer\Engine\Router;
 use WebServer\Engine\Utilities\CursorToTarget;
+use WebServer\Exceptions\RouteNotFoundException;
 use WebServer\Exceptions\WebServerException;
 
 
@@ -57,6 +58,11 @@ class Engine
 		else
 		{
 			$target = $router->parseConfig($config);
+		}
+		
+		if (!$target)
+		{
+			throw new RouteNotFoundException();
 		}
 		
 		return CursorToTarget::convert($this->config->getClassLoader(), $target);

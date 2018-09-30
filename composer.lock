@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e6a60dbf15f7858305f0e03542a7b0cf",
+    "content-hash": "f5df8482d2381dc422b649629fd322bc",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -107,6 +107,45 @@
                 "object graph"
             ],
             "time": "2018-06-11T23:09:50+00:00"
+        },
+        {
+            "name": "oktopost/annotation",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Oktopost/Annotation.git",
+                "reference": "01126b906730c39c633c4a4a7da9c4222c31ae34"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Oktopost/Annotation/zipball/01126b906730c39c633c4a4a7da9c4222c31ae34",
+                "reference": "01126b906730c39c633c4a4a7da9c4222c31ae34",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.1"
+            },
+            "type": "lib",
+            "autoload": {
+                "psr-0": {
+                    "Annotation": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexey Puchkov",
+                    "email": "alexey@oktopost.com"
+                }
+            ],
+            "description": "Annotations library (yes, another one)",
+            "time": "2017-07-23T11:14:02+00:00"
         },
         {
             "name": "oktopost/cosmic-ray",

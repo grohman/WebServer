@@ -9,7 +9,7 @@ interface IResponseParser
 {
 	/**
 	 * @param IActionResponse $response
-	 * @return IActionResponse|IWebResponse|object|null
+	 * @return IActionResponse|IWebResponse|mixed|null
 	 */
 	public function parse(IActionResponse $response);
 }
