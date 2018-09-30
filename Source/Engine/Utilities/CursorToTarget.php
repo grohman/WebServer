@@ -7,6 +7,7 @@ use Traitor\TStaticClass;
 use WebServer\Base\Config\IClassLoader;
 use WebServer\Base\ITargetAction;
 use WebServer\Base\Engine\IRouteCursor;
+use WebServer\Engine\DefaultParser;
 use WebServer\Engine\TargetAction;
 use WebServer\Exceptions\RoutingException;
 
@@ -57,6 +58,7 @@ class CursorToTarget
 			$parsers[] = $parser;
 		}
 		
+		$parsers[] = new DefaultParser();
 		$action->setResponseParsers($parsers);
 	}
 	
