@@ -25,7 +25,7 @@ class Response
 	{
 		$response = new StandardWebResponse();
 		
-		//$response->
+		// Set code $response->
 		$response->setCookies($cookies);
 		$response->setHeaders($headers);
 		$response->setBody($body);
@@ -71,7 +71,7 @@ class Response
 		return self::redirect($to, false);
 	}
 	
-	public static function withBody(string $body, int $code = 200): IWebResponse
+	public static function string(string $body, int $code = 200): IWebResponse
 	{
 		return self::with($code, [], $body, []);
 	}
@@ -81,7 +81,7 @@ class Response
 	 * @param int $code
 	 * @return IWebResponse
 	 */
-	public static function withCookies(array $cookies, int $code = 200): IWebResponse
+	public static function cookies(array $cookies, int $code = 200): IWebResponse
 	{
 		return self::with($code, [], null, $cookies);
 	}
@@ -96,7 +96,7 @@ class Response
 	 * @param bool $serverOnly
 	 * @return IWebResponse
 	 */
-	public static function withCookie(
+	public static function cookie(
 		$name, 
 		?string $value = null, 
 		$expire = 0, 
@@ -109,6 +109,6 @@ class Response
 			Cookie::create($name, $value, $expire, $path, $domain, $secure, $serverOnly) :
 			$name);
 		
-		return self::withCookies([$cookie]);
+		return self::cookies([$cookie]);
 	}
 }

@@ -32,7 +32,7 @@ class DefaultParser implements IResponseParser
 		}
 		else if (is_string($result))
 		{
-			Response::withBody($result);
+			Response::string($result);
 		}
 		else if ($result && is_array($result))
 		{
@@ -40,7 +40,7 @@ class DefaultParser implements IResponseParser
 			
 			if ($first instanceof Cookie)
 			{
-				return Response::withCookies($result);
+				return Response::cookies($result);
 			}
 			else if ($first instanceof LiteObject)
 			{
@@ -53,7 +53,7 @@ class DefaultParser implements IResponseParser
 		}
 		else if ($result instanceof Cookie)
 		{
-			return Response::withCookies($result);
+			return Response::cookies([$result]);
 		}
 		else if ($result instanceof \stdClass)
 		{
