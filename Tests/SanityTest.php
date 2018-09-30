@@ -14,6 +14,13 @@ use WebServer\Base\IResponseParser;
 
 class SanityTest extends TestCase
 {
+	public function setUp()
+	{
+		StaticRequestState::$responseApplied = false;
+		StaticRequestState::$order = [];
+	}
+	
+	
 	public function test_sanity(): void
 	{
 		$value = new NarratorLoadedValue();
@@ -27,6 +34,9 @@ class SanityTest extends TestCase
 		$narrator = $server->config()->getNarrator();
 		$narrator->params()->byName('narratorValue', $value);
 		
+		
+		TestController::$result = 123;
+		MainParser::$expected = 123;
 		
 		$server->execute(['config.*']);
 		
@@ -51,6 +61,48 @@ class SanityTest extends TestCase
 		
 		self::assertTrue(StaticRequestState::$responseApplied, 'Apply was not called on the generated web response');
 	}
+	
+	public function test_sanity_for_exception(): void
+	{
+		$value = new NarratorLoadedValue();
+		
+		$request = new DummyWebRequest();
+		$request->setURI('/v2/targ/hello');
+		$request->setMethod('POST');
+		
+		$server = new Server($request);
+		$server->config()->setConfigDirectory(__DIR__ . '/Sanity');
+		$narrator = $server->config()->getNarrator();
+		$narrator->params()->byName('narratorValue', $value);
+		
+		
+		TestController::$result = new \Exception('Some error in controller');
+		TestController::$errorResult = 456;
+		MainParser::$expected = 456;
+		
+		$server->execute(['config.*']);
+		
+		
+		self::assertEquals(
+			[
+				[DecoratorA::class, 'init', []],
+				[TestController::class, 'init', [$value]],
+				[DecoratorA::class, 'preExecute', [$request]],
+				[TestController::class, 'preExecute', []],
+				
+				[TestController::class, 'helloWorld', []],
+				
+				[DecoratorA::class, 'onException', [TestController::$result]],
+				[TestController::class, 'onException', [TestController::$result]],
+				
+				[DecoratorA::class, 'destroy', []],
+				[TestController::class, 'destroy', []],
+			],
+			StaticRequestState::$order
+		);
+		
+		self::assertTrue(StaticRequestState::$responseApplied, 'Apply was not called on the generated web response');
+	}
 }
 
 
@@ -66,12 +118,16 @@ class StaticRequestState
 
 class NarratorLoadedValue
 {
-	public $value = [];
+	public $value = 789;
 }
 
 
 class TestController
 {
+	public static $result = 123;
+	public static $errorResult = 456;
+	
+	
 	public function init(NarratorLoadedValue $narratorValue)
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
@@ -91,7 +147,13 @@ class TestController
 	public function helloWorld()
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
-		return 123;
+		
+		$r = self::$result;
+		
+		if ($r instanceof \Throwable)
+			throw $r;
+		
+		return $r;
 	}
 	
 	
@@ -100,9 +162,10 @@ class TestController
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
 	
-	public function onException()
+	public function onException(\Exception $e)
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
+		return self::$errorResult;
 	}
 	
 	public function destroy()
@@ -129,7 +192,7 @@ class DecoratorA
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
 	
-	public function onException()
+	public function onException(\Exception $e)
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
@@ -171,14 +234,18 @@ class DecoratorB
 
 class MainParser implements IResponseParser
 {
+	public static $expected = 123;
+	
 	/**
 	 * @param IActionResponse $response
 	 * @return IActionResponse|IWebResponse|object|null|mixed
 	 */
 	public function parse(IActionResponse $response)
 	{
-		if ($response->get() !== 123)
-			throw new \Exception('Expecting 123 from controller\'s action');
+		$expected = self::$expected;
+			
+		if ($response->get() !== $expected)
+			throw new \Exception("Expecting $expected from controller's action");
 		
 		return 'abc';
 	}

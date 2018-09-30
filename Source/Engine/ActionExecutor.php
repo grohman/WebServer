@@ -93,6 +93,7 @@ class ActionExecutor
 		$narrator->params()->first($t);
 		
 		$this->invokeMethodWithResponse(self::HANDLERS_ON_EXCEPTION, $narrator);
+		
 	}
 		
 	
@@ -132,7 +133,6 @@ class ActionExecutor
 		catch (\Throwable $t)
 		{
 			$this->handleException($t);
-			return $this->response;
 		}
 		
 		$this->invokeMethod(self::HANDLERS_DESTROY);
