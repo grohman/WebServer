@@ -45,16 +45,16 @@ class SanityTest extends TestCase
 			[
 				[DecoratorA::class, 'init', []],
 				[TestController::class, 'init', [$value]],
-				[DecoratorA::class, 'preExecute', [$request]],
-				[TestController::class, 'preExecute', []],
+				[DecoratorA::class, 'before', [$request]],
+				[TestController::class, 'before', []],
 				
 				[TestController::class, 'helloWorld', []],
 				
-				[DecoratorA::class, 'postExecute', []],
-				[TestController::class, 'postExecute', []],
+				[DecoratorA::class, 'after', []],
+				[TestController::class, 'after', []],
 				
-				[DecoratorA::class, 'destroy', []],
-				[TestController::class, 'destroy', []],
+				[DecoratorA::class, 'complete', []],
+				[TestController::class, 'complete', []],
 			],
 			StaticRequestState::$order
 		);
@@ -87,16 +87,16 @@ class SanityTest extends TestCase
 			[
 				[DecoratorA::class, 'init', []],
 				[TestController::class, 'init', [$value]],
-				[DecoratorA::class, 'preExecute', [$request]],
-				[TestController::class, 'preExecute', []],
+				[DecoratorA::class, 'before', [$request]],
+				[TestController::class, 'before', []],
 				
 				[TestController::class, 'helloWorld', []],
 				
 				[DecoratorA::class, 'onException', [TestController::$result]],
 				[TestController::class, 'onException', [TestController::$result]],
 				
-				[DecoratorA::class, 'destroy', []],
-				[TestController::class, 'destroy', []],
+				[DecoratorA::class, 'complete', []],
+				[TestController::class, 'complete', []],
 			],
 			StaticRequestState::$order
 		);
@@ -133,7 +133,7 @@ class TestController
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
 	
-	public function preExecute()
+	public function before()
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
@@ -157,7 +157,7 @@ class TestController
 	}
 	
 	
-	public function postExecute()
+	public function after()
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
@@ -168,7 +168,7 @@ class TestController
 		return self::$errorResult;
 	}
 	
-	public function destroy()
+	public function complete()
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
@@ -182,12 +182,12 @@ class DecoratorA
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
 	
-	public function preExecute(IWebRequest $request)
+	public function before(IWebRequest $request)
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
 	
-	public function postExecute()
+	public function after()
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
@@ -197,7 +197,7 @@ class DecoratorA
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
 	
-	public function destroy()
+	public function complete()
 	{
 		StaticRequestState::$order[] = [__CLASS__, __FUNCTION__, func_get_args()];
 	}
@@ -210,12 +210,12 @@ class DecoratorB
 		throw new \Exception('Should not be called');
 	}
 	
-	public function preExecute()
+	public function before()
 	{
 		throw new \Exception('Should not be called');
 	}
 	
-	public function postExecute()
+	public function after()
 	{
 		throw new \Exception('Should not be called');
 	}
@@ -225,7 +225,7 @@ class DecoratorB
 		throw new \Exception('Should not be called');
 	}
 	
-	public function destroy()
+	public function complete()
 	{
 		throw new \Exception('Should not be called');
 	}

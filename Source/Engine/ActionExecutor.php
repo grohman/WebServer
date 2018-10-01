@@ -12,10 +12,10 @@ use WebServer\Exceptions\WebServerException;
 class ActionExecutor
 {
 	private const HANDLERS_INIT			= 'init';
-	private const HANDLERS_PRE_ACTION	= 'preExecute';
-	private const HANDLERS_POST_ACTION	= 'postExecute';
+	private const HANDLERS_PRE_ACTION	= 'before';
+	private const HANDLERS_POST_ACTION	= 'after';
 	private const HANDLERS_ON_EXCEPTION	= 'onException';
-	private const HANDLERS_DESTROY		= 'destroy';
+	private const HANDLERS_COMPLETE		= 'complete';
 	
 	
 	/** @var IActionResponse|null */
@@ -122,11 +122,11 @@ class ActionExecutor
 	public function executeAction(): IActionResponse
 	{
 		$this->invokeMethod(self::HANDLERS_INIT);
-		$this->invokeMethod(self::HANDLERS_PRE_ACTION);
-		$this->invokeCallbackDecorators();
 		
 		try
 		{
+			$this->invokeMethod(self::HANDLERS_PRE_ACTION);
+			$this->invokeCallbackDecorators();
 			$this->invokeAction();
 			$this->invokeMethodWithResponse(self::HANDLERS_POST_ACTION);
 		}
@@ -135,7 +135,7 @@ class ActionExecutor
 			$this->handleException($t);
 		}
 		
-		$this->invokeMethod(self::HANDLERS_DESTROY);
+		$this->invokeMethod(self::HANDLERS_COMPLETE);
 		
 		return $this->response;
 	}

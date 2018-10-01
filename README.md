@@ -3,8 +3,8 @@
 
 ## Invocation sequence
 
-* initialize
-* preExecute
+* init
+* before
 * callback decorators
 > try 
 > * action
@@ -13,8 +13,8 @@
 > * onException
 > * return
 
-* postExecute 
-* finalize
+* after 
+* complete
 
  
  
