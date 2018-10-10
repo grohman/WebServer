@@ -69,7 +69,7 @@ class RouteCursor implements IRouteCursor
 			if ($routePath[0] == '/')
 				$routePath = substr($routePath, 1);
 			
-			if ($routePath[strlen($routePath) - 1] == '/')
+			if ($routePath && $routePath[strlen($routePath) - 1] == '/')
 				$routePath = substr($routePath, 0, strlen($routePath) - 1);
 		}
 			
