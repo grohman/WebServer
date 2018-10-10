@@ -32,7 +32,7 @@ class DefaultParser implements IResponseParser
 		}
 		else if (is_string($result))
 		{
-			Response::string($result);
+			return Response::string($result);
 		}
 		else if ($result && is_array($result))
 		{
