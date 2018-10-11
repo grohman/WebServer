@@ -99,7 +99,7 @@ class StandardMatcher
 				return ValueMatcher::matchSingleKey($cursor, $request->getMethod(), $config);
 				
 			case 'ajax':
-				return strtolower($request->getHeader('X-Requested-With', '') == 'xmlhttprequest');
+				return strtolower($request->getHeader('X-Requested-With', '')) == 'xmlhttprequest';
 				
 			default:
 				throw new WebServerFatalException("Unexpected key <$key> in route config");
