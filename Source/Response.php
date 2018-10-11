@@ -28,7 +28,9 @@ class Response
 		// Set code $response->
 		$response->setCookies($cookies);
 		$response->setHeaders($headers);
-		$response->setBody($body);
+		
+		if (!is_null($body))
+		    $response->setBody($body);
 		
 		return $response;
 	}
