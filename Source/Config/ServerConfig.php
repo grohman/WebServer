@@ -46,7 +46,8 @@ class ServerConfig implements IServerConfig
 	{
 		$this->skeleton = new Skeleton();
 		$this->narrator = new Narrator();
-		
+        
+        $this->narrator->params()->byType(INarrator::class, function() { return $this->narrator; });
 		$this->narrator->params()->fromSkeleton($this->skeleton);
 		
 		$this->costumeMatchers = new CostumeMatchersCollection();
