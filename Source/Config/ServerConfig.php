@@ -45,6 +45,7 @@ class ServerConfig implements IServerConfig
 	public function __construct()
 	{
 		$this->skeleton = new Skeleton();
+		$this->skeleton->useGlobal();
 		$this->narrator = new Narrator();
 		
 		$this->narrator->params()->fromSkeleton($this->skeleton);
