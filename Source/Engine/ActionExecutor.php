@@ -57,14 +57,16 @@ class ActionExecutor
 		$this->narrator->params()->byType(IActionResponse::class, function () { return $this->response; });
 	}
 	
-	private function invokeMethodWithResponse(string $method, ?INarrator $narrator = null): void
+	private function invokeMethodWithResponse(string $method, ?INarrator $narrator = null): bool
 	{
+		$exists = false;
 		$narrator = $narrator ?: $this->narrator;
 		$controller = $this->target->getController();
 		$decorators = $this->target->getDecorators();
 		
 		foreach ($decorators as $decorator)
 		{
+			$exists = method_exists($decorator, $method) || $exists;
 			$result = $narrator->invokeMethodIfExists($decorator, $method);
 			
 			if (!is_null($result))
@@ -75,6 +77,7 @@ class ActionExecutor
 		
 		if ($controller)
 		{
+			$exists = method_exists($controller, $method) || $exists;
 			$result = $narrator->invokeMethodIfExists($controller, $method);
 			
 			if (!is_null($result))
@@ -82,6 +85,8 @@ class ActionExecutor
 				$this->response = new ActionResponse($result);
 			}
 		}
+		
+		return $exists;
 	}
 	
 	private function handleException(\Throwable $t): void
@@ -92,8 +97,12 @@ class ActionExecutor
 		$narrator = clone $this->narrator;
 		$narrator->params()->first($t);
 		
-		$this->invokeMethodWithResponse(self::HANDLERS_ON_EXCEPTION, $narrator);
+		$handled = $this->invokeMethodWithResponse(self::HANDLERS_ON_EXCEPTION, $narrator);
 		
+		if (!$handled)
+		{
+			throw $t;
+		}
 	}
 		
 	
