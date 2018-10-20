@@ -2,8 +2,8 @@
 namespace WebServer\Engine;
 
 
-use WebServer\Base\IResponseParser;
 use WebServer\Base\ITargetAction;
+use WebServer\Base\IResponseParser;
 
 
 class TargetAction implements ITargetAction
