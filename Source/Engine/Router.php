@@ -2,6 +2,7 @@
 namespace WebServer\Engine;
 
 
+use Structura\Arrays;
 use WebCore\IWebRequest;
 use WebServer\Base\Engine\IRouteCursor;
 use WebServer\Base\Engine\IRouterConfig;
@@ -111,6 +112,9 @@ class Router
 			function($config)
 				use (&$result)
 			{
+				if (is_array($config) && Arrays::isNumeric($config))
+					$config = ['req' => $config];
+				
 				$result = $this->parseSingleRoute($config, true);
 				return $result;
 			});
