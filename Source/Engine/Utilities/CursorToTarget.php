@@ -22,7 +22,11 @@ class CursorToTarget
 		$action = $cursor->getAction();
 		$controller = $cursor->getController();
 		
-		if (is_null($controller) && !is_callable($action))
+		if (is_callable($action))
+		{
+			return new TargetAction(null, $action);
+		}
+		else if (is_null($controller))
 		{
 			throw new RoutingException('Controller was not set');
 		}
