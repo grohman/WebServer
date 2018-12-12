@@ -25,7 +25,7 @@ class Response
 	{
 		$response = new StandardWebResponse();
 		
-		// Set code $response->
+		$response->setCode($code);
 		$response->setCookies($cookies);
 		$response->setHeaders($headers);
 		

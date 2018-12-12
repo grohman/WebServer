@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "f5df8482d2381dc422b649629fd322bc",
@@ -1703,16 +1703,16 @@
         },
         {
             "name": "unstable-cacao/web-core",
-            "version": "0.1.13",
+            "version": "0.1.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unstable-cacao/WebCore.git",
-                "reference": "98b444f2e77931b9fb6755825816b54b0a84cd0e"
+                "reference": "1dbdeacdf1c343c4326877f394d134f8abb51f34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unstable-cacao/WebCore/zipball/98b444f2e77931b9fb6755825816b54b0a84cd0e",
-                "reference": "98b444f2e77931b9fb6755825816b54b0a84cd0e",
+                "url": "https://api.github.com/repos/unstable-cacao/WebCore/zipball/1dbdeacdf1c343c4326877f394d134f8abb51f34",
+                "reference": "1dbdeacdf1c343c4326877f394d134f8abb51f34",
                 "shasum": ""
             },
             "require": {
@@ -1749,7 +1749,7 @@
                     "role": "Developer"
                 }
             ],
-            "time": "2018-09-24T17:10:03+00:00"
+            "time": "2018-09-30T15:24:26+00:00"
         },
         {
             "name": "webmozart/assert",
