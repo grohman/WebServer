@@ -1579,16 +1579,16 @@
         },
         {
             "name": "unstable-cacao/narrator",
-            "version": "1.1.0",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unstable-cacao/Narrator.git",
-                "reference": "b5ef1ffb5c1f0ab2326167e69d81c91852312d87"
+                "reference": "b8a06288a6eb338451a78f45fa811b44cd2da860"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unstable-cacao/Narrator/zipball/b5ef1ffb5c1f0ab2326167e69d81c91852312d87",
-                "reference": "b5ef1ffb5c1f0ab2326167e69d81c91852312d87",
+                "url": "https://api.github.com/repos/unstable-cacao/Narrator/zipball/b8a06288a6eb338451a78f45fa811b44cd2da860",
+                "reference": "b8a06288a6eb338451a78f45fa811b44cd2da860",
                 "shasum": ""
             },
             "require": {
@@ -1615,7 +1615,7 @@
                     "email": "marinashers@gmail.com"
                 }
             ],
-            "time": "2018-06-11T11:14:58+00:00"
+            "time": "2018-09-30T15:03:48+00:00"
         },
         {
             "name": "unstable-cacao/structura",
