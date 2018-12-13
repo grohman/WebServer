@@ -90,6 +90,14 @@ class RouteCursor implements IRouteCursor
 		return $this->getFirstValue($this->actions);
 	}
 	
+	public function isSet(): bool
+	{
+		$action = $this->getAction();
+		$controller = $this->getController();
+		
+		return is_callable($action) || ($controller && $action);
+	}
+	
 	/**
 	 * @return string[]
 	 */

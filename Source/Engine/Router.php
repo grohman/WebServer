@@ -227,4 +227,20 @@ class Router
 		
 		return $result ? $this->cursor : null;
 	}
+	
+	public function getNotFoundCallback(array $rootConfig): IRouteCursor
+	{
+		dd($this->cursor);
+		$value = $rootConfig['404'] ?? $rootConfig['not-found'] ?? null;
+		
+		$this->cursor = new RouteCursor($this->request->getURI());
+		$this->cursor->push();
+		
+		if (!$value)
+		{
+			
+		}
+		
+		return $this->cursor;
+	}
 }

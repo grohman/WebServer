@@ -11,6 +11,8 @@ interface IRouteCursor extends ITargetCursor
 	 */
 	public function getAction();
 	
+	public function isSet(): bool;
+	
 	/**
 	 * @return string[]
 	 */

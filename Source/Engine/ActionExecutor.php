@@ -144,8 +144,11 @@ class ActionExecutor
 			$this->handleException($t);
 		}
 		
-		$this->invokeMethod(self::HANDLERS_COMPLETE);
-		
 		return $this->response;
+	}
+	
+	public function executeComplete()
+	{
+		$this->invokeMethod(self::HANDLERS_COMPLETE);
 	}
 }

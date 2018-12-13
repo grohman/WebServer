@@ -113,4 +113,31 @@ class Response
 		
 		return self::cookies([$cookie]);
 	}
+	
+	
+	public static function notFoundCallback(): callable 
+	{
+		return function(): IWebResponse { return self::withNotFound(); };
+	}
+	
+	
+	public static function withUnauthorized(): IWebResponse 
+	{
+		return self::with(401);
+	}
+	
+	public static function withPaymentRequired(): IWebResponse 
+	{
+		return self::with(404);
+	}
+	
+	public static function withForbidden(): IWebResponse 
+	{
+		return self::with(402);
+	}
+	
+	public static function withNotFound(): IWebResponse 
+	{
+		return self::with(404);
+	}
 }

@@ -10,6 +10,8 @@ use WebCore\HTTP\Requests\StandardWebRequest;
 
 use WebServer\Base\IActionResponse;
 use WebServer\Base\ITargetAction;
+use WebServer\Engine\IResponseContainer;
+use WebServer\Engine\ResponseContainer;
 use WebServer\Engine\Router;
 use WebServer\Config\ServerConfig;
 use WebServer\Engine\ActionExecutor;
@@ -66,13 +68,16 @@ class Engine
 		{
 			throw new RouteNotFoundException();
 		}
+		else if (!$target->isSet())
+		{
+			$target->setAction(Response::notFoundCallback());
+		}
 		
 		return CursorToTarget::convert($this->config->getClassLoader(), $target);
 	}
 	
-	private function executeAction(ITargetAction $action): IActionResponse
+	private function executeAction(ActionExecutor $actionExecutor, ITargetAction $action): IActionResponse
 	{
-		$actionExecutor = new ActionExecutor($this->config->getNarrator());
 		$actionExecutor->initialize($action);
 		return $actionExecutor->executeAction();
 	}
@@ -111,13 +116,22 @@ class Engine
 	 */
 	public function execute($config, IWebRequest $request = null): void
 	{
+		$responseWrapper = new ResponseContainer();
+		$this->config->getNarrator()->params()->byType(IResponseContainer::class, $responseWrapper);
+		
+		$actionExecutor = new ActionExecutor($this->config->getNarrator());
 		$request = $request ?: StandardWebRequest::current();
 		
 		$this->setup($request);
 		
 		$target			= $this->getTarget($config, $request);
-		$actionResponse	= $this->executeAction($target);
+		$actionResponse	= $this->executeAction($actionExecutor, $target);
 		$webResponse	= $this->parseResponse($target, $actionResponse);
+		
+		$responseWrapper->wrap($webResponse);
+		$this->config->getNarrator()->params()->byType(IWebResponse::class, $webResponse);
+		
+		$actionExecutor->executeComplete();
 		
 		$webResponse->apply();
 	}
