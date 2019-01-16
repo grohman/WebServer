@@ -2,20 +2,24 @@
 namespace WebServer;
 
 
+use Narrator\INarrator;
 use Structura\Arrays;
 
 use WebCore\IWebRequest;
 use WebCore\IWebResponse;
 use WebCore\HTTP\Requests\StandardWebRequest;
 
+use WebCore\Validation\Loader\InputLoader;
+use WebCore\Validation\Loader\ScalarLoader;
+use WebCore\Validation\Loader\InputValidatorLoader;
 use WebServer\Base\IActionResponse;
 use WebServer\Base\ITargetAction;
-use WebServer\Engine\IResponseContainer;
-use WebServer\Engine\ResponseContainer;
-use WebServer\Engine\Router;
 use WebServer\Config\ServerConfig;
+use WebServer\Engine\Router;
 use WebServer\Engine\ActionExecutor;
 use WebServer\Engine\ActionResponse;
+use WebServer\Engine\ResponseContainer;
+use WebServer\Engine\IResponseContainer;
 use WebServer\Engine\Utilities\CursorToTarget;
 use WebServer\Exceptions\WebServerException;
 use WebServer\Exceptions\RouteNotFoundException;
@@ -25,6 +29,9 @@ class Engine
 {
 	/** @var ServerConfig */
 	private $config;
+	
+	/** @var ResponseContainer */
+	private $responseContainer;
 	
 	
 	private function getType($of): string
@@ -37,12 +44,6 @@ class Engine
 			return gettype($of);
 	}
 	
-	
-	private function setup(IWebRequest $request): void
-	{
-		$narrator = $this->config->getNarrator();
-		$narrator->params()->byType(IWebRequest::class, $request);
-	}
 	
 	/**
 	 * @param string|string[] $config
@@ -82,6 +83,22 @@ class Engine
 		return $actionExecutor->executeAction();
 	}
 	
+	private function setupNarrator(IWebRequest $request)
+	{
+		$narrator = $this->config->getNarrator();
+		$params = $narrator->params();
+		
+		InputValidatorLoader::register($narrator, $this->config->getSkeleton());
+		InputLoader::register($narrator, $request);
+		ScalarLoader::register($narrator, $request);
+		
+		$narrator->params()
+			->byType(IWebRequest::class, $request)
+			->byType(IResponseContainer::class, $this->responseContainer)
+			->addCallback([new InputLoader($request), 'get'])
+			->addCallback([new ScalarLoader($request), 'get']);
+	}
+	
 	private function parseResponse(ITargetAction $action, IActionResponse $response): IWebResponse
 	{
 		if ($response->isWebResponse())
@@ -107,6 +124,7 @@ class Engine
 	public function __construct(ServerConfig $config)
 	{
 		$this->config = $config;
+		$this->responseContainer = new ResponseContainer();
 	}
 	
 	
@@ -116,20 +134,20 @@ class Engine
 	 */
 	public function execute($config, IWebRequest $request = null): void
 	{
-		$responseWrapper = new ResponseContainer();
-		$this->config->getNarrator()->params()->byType(IResponseContainer::class, $responseWrapper);
+		$this->setupNarrator($request);
 		
-		$actionExecutor = new ActionExecutor($this->config->getNarrator());
-		$request = $request ?: StandardWebRequest::current();
-		
-		$this->setup($request);
-		
+		$narrator		= $this->config->getNarrator();
+		$request		= $request ?: StandardWebRequest::current();
+		$actionExecutor	= new ActionExecutor($narrator);
 		$target			= $this->getTarget($config, $request);
+		
+		$narrator->params()->byType(ITargetAction::class, $target);
+		
 		$actionResponse	= $this->executeAction($actionExecutor, $target);
 		$webResponse	= $this->parseResponse($target, $actionResponse);
 		
-		$responseWrapper->wrap($webResponse);
-		$this->config->getNarrator()->params()->byType(IWebResponse::class, $webResponse);
+		$this->responseContainer->wrap($webResponse);
+		$narrator->params()->byType(IWebResponse::class, $webResponse);
 		
 		$actionExecutor->executeComplete();
 		

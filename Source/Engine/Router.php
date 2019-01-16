@@ -220,7 +220,7 @@ class Router
 	
 	public function parseConfig(array $config): ?IRouteCursor
 	{
-		$this->cursor = new RouteCursor($this->request->getURI());
+		$this->cursor = new RouteCursor($this->request->getPath());
 		$this->cursor->push();
 		
 		$result = $this->parseSingleRoute($config);

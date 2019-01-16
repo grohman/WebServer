@@ -60,12 +60,30 @@ class TargetAction implements ITargetAction
 		return !is_null($this->controller);
 	}
 	
+	public function isMethod(): bool
+	{
+		return (is_string($this->action) && $this->controller);	
+	}
+	
+	public function isCallback(): bool
+	{
+		return is_callable($this->action);
+	}
+	
 	/**
 	 * @return object|null
 	 */
 	public function getController()
 	{
 		return $this->controller;
+	}
+	
+	public function getActionName(): ?string
+	{
+		if (!$this->action || is_callable($this->action))
+			return null;
+		
+		return $this->action;
 	}
 	
 	public function getAction(): callable

@@ -6,6 +6,7 @@ use Structura\Arrays;
 use Objection\Mapper;
 use Objection\LiteObject;
 
+use Structura\Map;
 use WebCore\Cookie;
 use WebCore\IWebResponse;
 use WebServer\Response;
@@ -57,7 +58,11 @@ class DefaultParser implements IResponseParser
 		}
 		else if ($result instanceof \stdClass)
 		{
-			return Response::with(200, [], jsonencode($result));
+			return Response::with(200, [], jsonencode($result, JSON_FORCE_OBJECT));
+		}
+		else if ($result instanceof Map)
+		{
+			return Response::with(200, [], jsonencode($result->toArray(), JSON_FORCE_OBJECT));
 		}
 		
 		return null;

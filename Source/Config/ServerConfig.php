@@ -46,6 +46,8 @@ class ServerConfig implements IServerConfig
 	{
 		$this->skeleton = new Skeleton();
 		$this->skeleton->useGlobal();
+		$this->skeleton->enableKnot();
+		
 		$this->narrator = new Narrator();
 		
 		$this->narrator->params()->fromSkeleton($this->skeleton);

@@ -128,12 +128,12 @@ class Response
 	
 	public static function withPaymentRequired(): IWebResponse 
 	{
-		return self::with(404);
+		return self::with(402);
 	}
 	
 	public static function withForbidden(): IWebResponse 
 	{
-		return self::with(402);
+		return self::with(403);
 	}
 	
 	public static function withNotFound(): IWebResponse 
