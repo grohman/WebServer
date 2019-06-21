@@ -100,7 +100,7 @@ class StandardMatcher
 				
 			case 'ajax':
 				$value = $request->getHeader('X-Requested-With') ?? $request->getHeader('x-requested-with') ?? '';
-				return strtolower($value) == 'xmlhttprequest';
+				return (strtolower($value) == 'xmlhttprequest') == (bool)$config;
 				
 			default:
 				throw new WebServerFatalException("Unexpected key <$key> in route config");
