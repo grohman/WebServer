@@ -10,7 +10,7 @@ use WebCore\HTTP\Responses\StandardWebResponse;
 use WebServer\View\SimpleFile;
 
 
-class Responses
+class Response
 {
 	use TStaticClass;
 	
