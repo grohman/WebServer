@@ -7,9 +7,10 @@ use Traitor\TStaticClass;
 use WebCore\Cookie;
 use WebCore\IWebResponse;
 use WebCore\HTTP\Responses\StandardWebResponse;
+use WebServer\View\SimpleFile;
 
 
-class Response
+class Responses
 {
 	use TStaticClass;
 	
@@ -31,6 +32,15 @@ class Response
 		
 		if (!is_null($body))
 		    $response->setBody($body);
+		
+		return $response;
+	}
+	
+	
+	public static function include(string $path, array $data = [], int $code = 200): IWebResponse 
+	{
+		$response = self::with($code);
+		$response->setBodyCallback(SimpleFile::createCallback($path, $data));
 		
 		return $response;
 	}
