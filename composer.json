@@ -17,7 +17,7 @@
 		"oktopost/jsonencode": "^1.0",
 		"unstable-cacao/traitor": "^1.0",
 		"unstable-cacao/structura": "^2.0",
-		"phpunit/phpunit": "^7.2",
+		"phpunit/phpunit": "^8.1",
 		"oktopost/cosmic-ray": "^1.0",
 		"unstable-cacao/web-core": "^0.1",
 		"oktopost/skeleton": "^1.1",
