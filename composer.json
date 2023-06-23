@@ -14,16 +14,14 @@
 	},
 	"require":
 	{
-		"oktopost/jsonencode": "^1.0",
-		"unstable-cacao/traitor": "^1.0",
-		"unstable-cacao/structura": "^2.0",
-		"phpunit/phpunit": "^8.1",
-		"oktopost/cosmic-ray": "^1.0",
-		"unstable-cacao/web-core": "^0.1",
-		"oktopost/skeleton": "^1.1",
-		"unstable-cacao/narrator": "^1.1",
-		"oktopost/objection": "^1.0",
-		"oktopost/annotation": "^1.0"
+		"oktopost/jsonencode": "^1.1",
+		"unstable-cacao/traitor": "^2.0",
+		"oktopost/annotation": "^1.0",
+		"unstable-cacao/structura": "^3.0",
+		"unstable-cacao/web-core": "^1.0",
+		"oktopost/skeleton": "^2.0",
+		"unstable-cacao/narrator": "^2.0",
+		"oktopost/objection": "^2.0"
 	},
 	"scripts": 
 	{
