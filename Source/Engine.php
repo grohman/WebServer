@@ -74,6 +74,8 @@ class Engine
 			$target->setAction(Response::notFoundCallback());
 		}
 		
+		$request->setRouteParams($target->getRouteParams());
+		
 		return CursorToTarget::convert($this->config->getClassLoader(), $target);
 	}
 	

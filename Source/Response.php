@@ -7,7 +7,6 @@ use Traitor\TStaticClass;
 use WebCore\Cookie;
 use WebCore\IWebResponse;
 use WebCore\HTTP\Responses\StandardWebResponse;
-use WebServer\View\SimpleFile;
 
 
 class Response
@@ -32,15 +31,6 @@ class Response
 		
 		if (!is_null($body))
 		    $response->setBody($body);
-		
-		return $response;
-	}
-	
-	
-	public static function include(string $path, array $data = [], int $code = 200): IWebResponse 
-	{
-		$response = self::with($code);
-		$response->setBodyCallback(SimpleFile::createCallback($path, $data));
 		
 		return $response;
 	}
@@ -81,6 +71,14 @@ class Response
 	public static function permanentlyRedirect(string $to): IWebResponse
 	{
 		return self::redirect($to, false);
+	}
+	
+	public static function foundRedirect(string $to): IWebResponse
+	{
+		return self::with(
+			302,
+			['Location' => $to]
+		);
 	}
 	
 	public static function string(string $body, int $code = 200): IWebResponse
